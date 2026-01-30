@@ -4,22 +4,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Jenkins Pipeline SCM ayarlarından dolayı otomatik çeker
-                // ama loglarda görmek iyidir
-                echo 'Kod GitHub üzerinden güncellendi.'
+                echo 'Kod GitHub uzerinden guncellendi.'
             }
         }
 
         stage('Docker Build') {
             steps {
-                // --network host parametresini buraya ekledik
+                // DNS hatasini cozen kritik hamle
                 sh 'docker build --network host -t devops-app:ci .'
             }
         }
         
         stage('Cleanup') {
             steps {
-                echo 'Eski (dangling) image'lar temizleniyor...'
+                echo 'Eski Docker imagelari temizleniyor...'
                 sh 'docker image prune -f'
             }
         }

@@ -18,3 +18,6 @@ add_task("Azure Pipeline kur")
 add_task("Docker ogren")
 
 list_tasks()
+
+add_task("Azure Repos'a kod gonder")
+list_tasks()

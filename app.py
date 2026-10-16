@@ -3,21 +3,15 @@ tasks = []
 
 def add_task(task):
     tasks.append(task)
-    print(f"Gorev eklendi: {task}")
+    return task
 
 def list_tasks():
-    if not tasks:
-        print("Henuz gorev yok.")
-        return
+    return tasks
 
-    for number, task in enumerate(tasks, start=1):
+if __name__ == "__main__":
+    add_task("Python uygulamasini yaz")
+    add_task("Azure Pipeline kur")
+    add_task("Docker ogren")
+
+    for number, task in enumerate(list_tasks(), start=1):
         print(f"{number}. {task}")
-
-add_task("Python uygulamasini yaz")
-add_task("Azure Pipeline kur")
-add_task("Docker ogren")
-
-list_tasks()
-
-add_task("Azure Repos'a kod gonder")
-list_tasks()

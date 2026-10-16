@@ -10,4 +10,7 @@ steps:
       echo "Azure DevOps egitimi basladi!"
       echo "Agent uzerinde calisiyoruz."
       echo "Kod basariyla build edildi."
-    displayName: "Ilk pipeline komutlarim"
+
+      echo "Otomatik pipeline testi"
+      test -f README.md
+    displayName: "Build ve dosya kontrolu"

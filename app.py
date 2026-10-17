@@ -1,17 +1,20 @@
+from flask import Flask, jsonify
 
-tasks = []
+app = Flask(__name__)
 
-def add_task(task):
-    tasks.append(task)
-    return task
+tasks = [
+    "Python uygulamasini yaz",
+    "Azure Pipeline kur",
+    "Docker ogren"
+]
 
+@app.route("/")
+def home():
+    return "Mini Tasks API is running!"
+
+@app.route("/tasks")
 def list_tasks():
-    return tasks
+    return jsonify(tasks)
 
 if __name__ == "__main__":
-    add_task("Python uygulamasini yaz")
-    add_task("Azure Pipeline kur")
-    add_task("Docker ogren")
-
-    for number, task in enumerate(list_tasks(), start=1):
-        print(f"{number}. {task}")
+    app.run(host="0.0.0.0", port=5000)

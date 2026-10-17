@@ -1,19 +1,26 @@
-
 import unittest
-from app import add_task, list_tasks, tasks
+from app import app
 
-class TestTasks(unittest.TestCase):
+class TestTasksAPI(unittest.TestCase):
     def setUp(self):
-        tasks.clear()
+        self.client = app.test_client()
 
-    def test_add_task(self):
-        add_task("Azure DevOps ogren")
-        self.assertEqual(list_tasks(), ["Azure DevOps ogren"])
+    def test_home(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Mini Tasks API is running!", response.data)
 
-    def test_multiple_tasks(self):
-        add_task("Python")
-        add_task("Docker")
-        self.assertEqual(len(list_tasks()), 2)
+    def test_list_tasks(self):
+        response = self.client.get("/tasks")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.get_json(),
+            [
+                "Python uygulamasini yaz",
+                "Azure Pipeline kur",
+                "Docker ogren"
+            ]
+        )
 
 if __name__ == "__main__":
     unittest.main()

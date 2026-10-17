@@ -18,6 +18,9 @@ steps:
     displayName: 'Build Docker image'
 
   - script: |
+      echo "Azure DevOps egitimi basladi!"
+      echo "Agent uzerinde calisiyoruz."
+      echo "Kod basariyla build edildi."
       echo "Otomatik pipeline testi"
       test -f README.md
-    displayName: 'Build ve dosya kontrolü'
+    displayName: 'Build ve dosya kontrolu'

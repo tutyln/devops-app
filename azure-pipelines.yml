@@ -1,4 +1,3 @@
-
 trigger:
   - main
   - feature/add-task
@@ -17,3 +16,8 @@ steps:
 
   - script: docker build -t mini-tasks:$(Build.BuildId) .
     displayName: 'Build Docker image'
+
+  - script: |
+      echo "Otomatik pipeline testi"
+      test -f README.md
+    displayName: 'Build ve dosya kontrolü'

@@ -5,7 +5,7 @@ app = Flask(__name__)
 tasks = [
     "Python uygulamasini yaz",
     "Azure Pipeline kur",
-    "Docker ogren"
+    "yeni versiyon"
 ]
 
 @app.route("/")

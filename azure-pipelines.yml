@@ -3,13 +3,15 @@ trigger:
   - feature/add-task
 
 pool:
-  vmImage: ubuntu-latest
+  name: Default
+  demands:
+    - Agent.Name -equals Windows-CD-Agent
 
 steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.x'
-    displayName: 'Select Python version'
+  - script: |
+      python --version
+      python -m pip --version
+    displayName: 'Check Python installation'
 
   - script: |
       python -m pip install -r requirements.txt

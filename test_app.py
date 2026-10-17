@@ -18,7 +18,7 @@ class TestTasksAPI(unittest.TestCase):
             [
                 "Python uygulamasini yaz",
                 "Azure Pipeline kur",
-                "Docker ogren"
+                "yeni versiyon"
             ]
         )
 

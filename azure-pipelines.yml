@@ -28,3 +28,6 @@ steps:
       tags: |
         $(Build.BuildId)
         latest
+  - script: |
+      docker ps
+    displayName: 'Check local Docker containers'

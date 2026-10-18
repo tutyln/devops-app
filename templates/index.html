@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Tasks | Görev Paneli</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Mini Tasks</h1>
+        <p>İşlerini planla. Hedeflerine ulaş.</p>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <p>GÖREV MERKEZİ</p>
+            <h2>Bugün neler yapıyoruz?</h2>
+            <p>Görevlerini tek bir yerden yönet.</p>
+        </section>
+
+        <section class="task-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Görevlerim</h2>
+                    <p>Görev listene göz at.</p>
+                </div>
+                <span id="task-count">0 görev</span>
+            </div>
+
+            <form id="task-form">
+                <input
+                    id="task-input"
+                    type="text"
+                    placeholder="Yeni bir görev yaz..."
+                    maxlength="200"
+                    required
+                >
+                <button type="submit">+ Görev Ekle</button>
+            </form>
+
+            <p id="message" role="status"></p>
+            <ul id="task-list"></ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Mini Tasks · Kişisel görev panelin</p>
+    </footer>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

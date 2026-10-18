@@ -1,20 +1,58 @@
-from flask import Flask, jsonify
+
+import os
+
+import psycopg
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
-tasks = [
-    "Python uygulamasini yaz",
-    "Azure Pipeline kur",
-    "yeni versiyon"
-]
+
+def get_db_connection():
+    return psycopg.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        dbname=os.getenv("DB_NAME", "minitasks"),
+        user=os.getenv("DB_USER", "appuser"),
+        password=os.getenv("DB_PASSWORD", "localdevpassword"),
+    )
+
 
 @app.route("/")
 def home():
-    return "Mini Tasks API is running!"
+    return render_template("index.html")
 
-@app.route("/tasks")
-def list_tasks():
-    return jsonify(tasks)
+
+@app.route("/tasks", methods=["GET", "POST"])
+def tasks_api():
+    if request.method == "GET":
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT id, title FROM tasks ORDER BY id")
+                tasks = [
+                    {"id": row[0], "title": row[1]}
+                    for row in cur.fetchall()
+                ]
+
+        return jsonify(tasks)
+
+    data = request.get_json(silent=True) or {}
+    title = data.get("title", "").strip()
+
+    if not title:
+        return jsonify({"error": "Görev boş olamaz."}), 400
+
+    if len(title) > 200:
+        return jsonify({"error": "Görev en fazla 200 karakter olabilir."}), 400
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO tasks (title) VALUES (%s) RETURNING id, title",
+                (title,),
+            )
+            task_id, task_title = cur.fetchone()
+
+    return jsonify({"id": task_id, "title": task_title}), 201
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

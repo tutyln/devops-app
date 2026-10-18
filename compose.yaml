@@ -2,7 +2,6 @@
 services:
   db:
     image: postgres:17
-    container_name: mini-tasks-db
     environment:
       POSTGRES_DB: minitasks
       POSTGRES_USER: appuser
@@ -19,7 +18,6 @@ services:
 
   web:
     image: tttaylor/mini-tasks:latest
-    container_name: mini-tasks-web
     environment:
       DB_HOST: db
       DB_NAME: minitasks

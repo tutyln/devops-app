@@ -1,4 +1,3 @@
-
 import os
 
 import psycopg
@@ -20,13 +19,16 @@ def get_db_connection():
 def home():
     return render_template("index.html")
 
+
 @app.route("/health")
 def health():
     try:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT 1")
-        return jsonify({"status": "healthy", "version": "v2"}), 200
+
+        return jsonify({"status": "healthy"}), 200
+
     except Exception:
         app.logger.exception("Health check failed")
         return jsonify({"status": "unhealthy"}), 503
@@ -43,7 +45,7 @@ def tasks_api():
                     for row in cur.fetchall()
                 ]
 
-        return jsonify(tasks)
+        return jsonify(tasks), 200
 
     data = request.get_json(silent=True) or {}
     title = data.get("title", "").strip()
@@ -52,7 +54,9 @@ def tasks_api():
         return jsonify({"error": "Görev boş olamaz."}), 400
 
     if len(title) > 200:
-        return jsonify({"error": "Görev en fazla 200 karakter olabilir."}), 400
+        return jsonify(
+            {"error": "Görev en fazla 200 karakter olabilir."}
+        ), 400
 
     with get_db_connection() as conn:
         with conn.cursor() as cur:
@@ -63,6 +67,24 @@ def tasks_api():
             task_id, task_title = cur.fetchone()
 
     return jsonify({"id": task_id, "title": task_title}), 201
+
+
+@app.route("/tasks/<int:task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM tasks WHERE id = %s RETURNING id",
+                (task_id,),
+            )
+            deleted = cur.fetchone()
+
+    if deleted is None:
+        return jsonify({"error": "Görev bulunamadı."}), 404
+
+    return jsonify(
+        {"message": "Görev silindi.", "id": task_id}
+    ), 200
 
 
 if __name__ == "__main__":

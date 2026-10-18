@@ -1,0 +1,36 @@
+
+services:
+  db:
+    image: postgres:17
+    container_name: mini-tasks-db
+    environment:
+      POSTGRES_DB: minitasks
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: localdevpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - mini_tasks_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d minitasks"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: tttaylor/mini-tasks:latest
+    container_name: mini-tasks-web
+    environment:
+      DB_HOST: db
+      DB_NAME: minitasks
+      DB_USER: appuser
+      DB_PASSWORD: localdevpassword
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mini_tasks_postgres_data:
+    name: mini_tasks_postgres_data

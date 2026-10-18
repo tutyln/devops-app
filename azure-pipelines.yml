@@ -1,3 +1,4 @@
+
 trigger:
   - main
   - feature/add-task
@@ -24,18 +25,22 @@ steps:
       command: buildAndPush
       containerRegistry: dockerhubconn
       repository: tttaylor/mini-tasks
-      Dockerfile: '**/Dockerfile'
+      Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+      buildContext: '$(Build.SourcesDirectory)'
       tags: |
         $(Build.BuildId)
         latest
 
   - powershell: |
-      docker pull tttaylor/mini-tasks:latest
+      $ErrorActionPreference = 'Stop'
+      Set-Location "$(Build.SourcesDirectory)"
+
+      docker compose -f compose.yaml pull web
       if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      docker rm -f mini-tasks-web 2>$null
-      docker run -d --restart unless-stopped --name mini-tasks-web -p 5000:5000 tttaylor/mini-tasks:latest
+      docker compose -f compose.yaml up -d --no-build --force-recreate web
       if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      docker ps
-    displayName: 'Deploy updated container'
+      docker compose -f compose.yaml ps
+      if ($LASTEXITCODE -ne 0) { exit 1 }
+    displayName: 'Deploy using Docker Compose'

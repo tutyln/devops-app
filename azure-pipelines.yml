@@ -31,6 +31,7 @@ steps:
         $(Build.BuildId)
         latest
 
+  
   - powershell: |
       $ErrorActionPreference = 'Stop'
       Set-Location "$(Build.SourcesDirectory)"
@@ -38,9 +39,9 @@ steps:
       docker compose -f compose.yaml pull web
       if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      docker compose -f compose.yaml up -d --no-build --force-recreate web
+      docker compose -f compose.yaml up -d --no-build --force-recreate --no-deps web
       if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      docker compose -f compose.yaml ps
-      if ($LASTEXITCODE -ne 0) { exit 1 }
-    displayName: 'Deploy using Docker Compose'
+      docker ps
+    displayName: 'Deploy updated web container'
+

@@ -26,7 +26,7 @@ def health():
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT 1")
-        return jsonify({"status": "healthy"}), 200
+        return jsonify({"status": "healthy", "version": "v2"}), 200
     except Exception:
         app.logger.exception("Health check failed")
         return jsonify({"status": "unhealthy"}), 503

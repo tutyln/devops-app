@@ -33,4 +33,5 @@ services:
 
 volumes:
   mini_tasks_postgres_data:
+    external: true
     name: mini_tasks_postgres_data

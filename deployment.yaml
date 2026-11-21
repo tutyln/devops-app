@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-app-deployment
+  labels:
+    app: multi-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multi-app
+  template:
+    metadata:
+      labels:
+        app: multi-app
+    spec:
+      containers:
+      - name: backend
+        image: python:3.9-slim
+        command: ["python", "-c", "import time; print('Backend v1 ayakta'); time.sleep(3600)"]
+        ports:
+        - containerPort: 5000

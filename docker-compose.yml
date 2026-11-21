@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: testdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+  backend:
+    image: python:3.9-slim
+    working_dir: /app
+    command: >
+      bash -c "echo 'from flask import Flask; app = Flask(__name__)
+      @app.route(\"/\")
+      def hello(): return \"Selam babuş, Backend DB ile konuşuyor!\"
+      if __name__ == \"__main__\": app.run(host=\"0.0.0.0\", port=5000)' > app.py &&
+      pip install flask && python app.py"
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+    networks:
+      - app-net
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:
+    driver: bridge

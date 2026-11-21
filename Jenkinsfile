@@ -42,7 +42,8 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        echo "$GH_TOKEN" | docker login ghcr.io \
+                          set +x
+			  echo "$GH_TOKEN" | docker login ghcr.io \
                           -u "$GH_USER" --password-stdin
 
                         docker push ${IMAGE}:v3
@@ -64,7 +65,7 @@ pipeline {
                     sh '''
                         git config user.name "Jenkins"
                         git config user.email "jenkins@localhost"
-
+			sed -i "s|image: .*|image: ${IMAGE}:v3|" deployment.yaml		
                         git add deployment.yaml kustomization.yaml
 
                         git commit -m "Deploy application v3 [skip ci]" || true
